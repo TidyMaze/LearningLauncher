@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.support.v4.content.AsyncTaskLoader;
+import android.util.Log;
 
-import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * @credit http://developer.android.com/reference/android/content/AsyncTaskLoader.html
@@ -50,8 +50,17 @@ public class AppsLoader extends AsyncTaskLoader<ArrayList<AppModel>> {
             }
         }
 
+        AppModelDao appModelDao = LauncherDatabase.getInstance(this.getContext()).getAppModelDao();
+        List<AppModel> appsWithUsage = appModelDao.getAppsWithUsage();
+        Log.d("LAUNCHER", appsWithUsage.toString());
+
+        items.forEach(app -> {
+            app.setTimes(appsWithUsage.stream().filter(a2 -> a2.getMAppId() == app.getMAppId()).findFirst().map(a2 -> a2.getTimes()).orElse(0));
+        });
+
         // sort the list
-        Collections.sort(items, ALPHA_COMPARATOR);
+        Comparator<AppModel> comp = Comparator.comparing(AppModel::getTimes).reversed().thenComparing(AppModel::getMAppLabel);
+        Collections.sort(items, comp);
 
         return items;
     }
@@ -146,16 +155,4 @@ public class AppsLoader extends AsyncTaskLoader<ArrayList<AppModel>> {
     protected void onReleaseResources(ArrayList<AppModel> apps) {
         // do nothing
     }
-
-
-    /**
-     * Perform alphabetical comparison of application entry objects.
-     */
-    public static final Comparator<AppModel> ALPHA_COMPARATOR = new Comparator<AppModel>() {
-        private final Collator sCollator = Collator.getInstance();
-        @Override
-        public int compare(AppModel object1, AppModel object2) {
-            return sCollator.compare(object1.getLabel(), object2.getLabel());
-        }
-    };
 }

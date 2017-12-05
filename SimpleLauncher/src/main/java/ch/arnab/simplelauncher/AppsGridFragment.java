@@ -1,13 +1,18 @@
 package ch.arnab.simplelauncher;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Arnab Chakraborty
@@ -39,7 +44,8 @@ public class AppsGridFragment extends GridFragment implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(Loader<ArrayList<AppModel>> loader, ArrayList<AppModel> apps) {
-        mAdapter.setData(apps);
+        List<AppModel> appModels = apps;
+        mAdapter.setData(appModels);
 
         if (isResumed()) {
             setGridShown(true);
@@ -55,13 +61,58 @@ public class AppsGridFragment extends GridFragment implements LoaderManager.Load
 
     @Override
     public void onGridItemClick(GridView g, View v, int position, long id) {
-        AppModel app = (AppModel) getGridAdapter().getItem(position);
+        final AppModel app = (AppModel) getGridAdapter().getItem(position);
         if (app != null) {
             Intent intent = getActivity().getPackageManager().getLaunchIntentForPackage(app.getApplicationPackageName());
 
             if (intent != null) {
+                Log.d("LAUNCHER","Starting intent " + app.getApplicationPackageName());
+                final UsageEventDao usageEventDao = LauncherDatabase.getInstance(AppsGridFragment.this.getContext()).getUsageEventDao();
+                final AppModelDao appModelDao = LauncherDatabase.getInstance(AppsGridFragment.this.getContext()).getAppModelDao();
+                new AddEventTask(appModelDao, usageEventDao, app, this).execute();
                 startActivity(intent);
             }
         }
+    }
+}
+
+class AddEventTask extends AsyncTask<Void, Void, Void>{
+
+    private AppModelDao appModelDao;
+    private AppModel app;
+    private AppsGridFragment appsGridFragment;
+    private UsageEventDao usageEventDao;
+
+    AddEventTask(AppModelDao appModelDao, UsageEventDao usageEventDao, AppModel app, AppsGridFragment appsGridFragment){
+        this.appModelDao = appModelDao;
+        this.usageEventDao = usageEventDao;
+        this.app = app;
+        this.appsGridFragment = appsGridFragment;
+    }
+
+    @Override
+    protected Void doInBackground(Void... params) {
+        List<AppModel> storedAppModels = appModelDao.findAppModelsByUid(app.getMAppId());
+        Log.d("LAUNCHER", storedAppModels.toString());
+
+        if (storedAppModels.isEmpty()) {
+            AppModel am = new AppModel(app.getMAppLabel(), app.getMAppId());
+            appModelDao.insert(am);
+        }
+
+        Date time = Calendar.getInstance().getTime();
+        UsageEvent usageEvent = new UsageEvent();
+        usageEvent.setAppId(app.getMAppId());
+        usageEvent.setDate(time);
+
+        Log.d("LAUNCHER", usageEvent.toString());
+
+        usageEventDao.insert(usageEvent);
+        return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        appsGridFragment.getLoaderManager().restartLoader(0, null, appsGridFragment);
     }
 }

@@ -10,8 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Arnab Chakraborty
@@ -25,7 +25,7 @@ public class AppListAdapter extends ArrayAdapter<AppModel> {
         mInflater = LayoutInflater.from(context);
     }
 
-    public void setData(ArrayList<AppModel> data) {
+    public void setData(List<AppModel> data) {
         clear();
         if (data != null) {
             addAll(data);

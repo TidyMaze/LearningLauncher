@@ -1,7 +1,7 @@
-simplelauncher
-==============
+LearningLauncher
+================
 
-An example custom launcher for Android, read more here: http://arnab.ch/blog/2013/08/how-to-write-custom-launcher-app-in-android/
+A simple launcher that sort apps by usage in rolling window (eg: how many times in the past you used X app in the last hour).
 
--------
-MIT License. Copyright 2016 Arnab Chakraborty. http://arnab.ch
+
+Project starting for a fork of http://arnab.ch/blog/2013/08/how-to-write-custom-launcher-app-in-android/
