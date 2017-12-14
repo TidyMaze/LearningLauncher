@@ -15,9 +15,8 @@ import java.util.List;
  * @credit http://developer.android.com/reference/android/content/AsyncTaskLoader.html
  */
 public class AppsLoader extends AsyncTaskLoader<ArrayList<AppModel>> {
-    ArrayList<AppModel> mInstalledApps;
-
     final PackageManager mPm;
+    ArrayList<AppModel> mInstalledApps;
     PackageIntentReceiver mPackageObserver;
 
     public AppsLoader(Context context) {
@@ -52,15 +51,17 @@ public class AppsLoader extends AsyncTaskLoader<ArrayList<AppModel>> {
 
         AppModelDao appModelDao = LauncherDatabase.getInstance(this.getContext()).getAppModelDao();
         List<AppModel> appsWithUsage = appModelDao.getAppsWithUsage();
-        Log.d("LAUNCHER", appsWithUsage.toString());
+        Log.d("LAUNCHER", "Stored: " + appsWithUsage.toString());
 
         items.forEach(app -> {
-            app.setTimes(appsWithUsage.stream().filter(a2 -> a2.getMAppId() == app.getMAppId()).findFirst().map(a2 -> a2.getTimes()).orElse(0));
+            app.setScore(appsWithUsage.stream().filter(a2 -> a2.getMAppId() == app.getMAppId()).findFirst().map(AppModel::getScore).orElse(0f));
         });
 
         // sort the list
-        Comparator<AppModel> comp = Comparator.comparing(AppModel::getTimes).reversed().thenComparing(AppModel::getMAppLabel);
+        Comparator<AppModel> comp = Comparator.comparing(AppModel::getScore).reversed().thenComparing(AppModel::getMAppLabel);
         Collections.sort(items, comp);
+
+        Log.d("LAUNCHER", "Aggregated: " + items.toString());
 
         return items;
     }
