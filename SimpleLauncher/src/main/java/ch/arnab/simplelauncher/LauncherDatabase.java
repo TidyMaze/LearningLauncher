@@ -12,14 +12,11 @@ import android.content.Context;
 @TypeConverters({Converters.class})
 @Database(
         entities = { AppModel.class, UsageEvent.class },
-        version = 3
+        version = 6
 )
 public abstract class LauncherDatabase extends RoomDatabase {
     private static final String DB_NAME = "launcherDatabase.db";
     private static LauncherDatabase sInstance;
-
-    public abstract AppModelDao getAppModelDao();
-    public abstract UsageEventDao getUsageEventDao();
 
     public static LauncherDatabase getInstance(Context context) {
         if (sInstance != null) {
@@ -35,4 +32,8 @@ public abstract class LauncherDatabase extends RoomDatabase {
         }
         return sInstance;
     }
+
+    public abstract AppModelDao getAppModelDao();
+
+    public abstract UsageEventDao getUsageEventDao();
 }

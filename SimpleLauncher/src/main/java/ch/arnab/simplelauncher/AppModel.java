@@ -38,7 +38,7 @@ public class AppModel {
     @ColumnInfo(name = "uid")
     private int mAppId;
 
-    private int times;
+    private float score;
 
     public AppModel(Context context, ApplicationInfo info) {
         mContext = context;
@@ -119,12 +119,12 @@ public class AppModel {
         this.mAppId = mAppId;
     }
 
-    public int getTimes() {
-        return times;
+    public float getScore() {
+        return score;
     }
 
-    public void setTimes(int times) {
-        this.times = times;
+    public void setScore(float score) {
+        this.score = score;
     }
 
     @Override
@@ -132,7 +132,7 @@ public class AppModel {
         return "AppModel{" +
                 "mAppLabel='" + mAppLabel + '\'' +
                 ", mAppId=" + mAppId +
-                ", times=" + times +
+                ", score=" + score +
                 '}';
     }
 }
