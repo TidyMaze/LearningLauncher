@@ -1,4 +1,4 @@
-package ch.arnab.simplelauncher;
+package fr.yaro.learninglauncher;
 
 /*
  * Created by Thomas Barrasso on 9/11/12.
@@ -48,22 +48,19 @@ public class GridFragment extends Fragment {
     static final int INTERNAL_LIST_CONTAINER_ID = 0x00ff0003;
 
     final private Handler mHandler = new Handler();
-
-    final private Runnable mRequestFocus = new Runnable() {
-        public void run() {
-            mGrid.focusableViewAvailable(mGrid);
-        }
-    };
-
     final private AdapterView.OnItemClickListener mOnClickListener
             = new AdapterView.OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
             onGridItemClick((GridView) parent, v, position, id);
         }
     };
-
     ListAdapter mAdapter;
     GridView mGrid;
+    final private Runnable mRequestFocus = new Runnable() {
+        public void run() {
+            mGrid.focusableViewAvailable(mGrid);
+        }
+    };
     View mEmptyView;
     TextView mStandardEmptyView;
     View mProgressContainer;
@@ -72,6 +69,15 @@ public class GridFragment extends Fragment {
     boolean mGridShown;
 
     public GridFragment() { }
+
+    public static int convertDpToPixels(float dp, Context context) {
+        Resources resources = context.getResources();
+        return (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                dp,
+                resources.getDisplayMetrics()
+        );
+    }
 
     /**
      * Provide default implementation to return a simple grid view.  Subclasses
@@ -172,15 +178,6 @@ public class GridFragment extends Fragment {
         super.onDestroyView();
     }
 
-    public static int convertDpToPixels(float dp, Context context){
-        Resources resources = context.getResources();
-        return (int) TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dp,
-                resources.getDisplayMetrics()
-        );
-    }
-
     /**
      * This method will be called when an item in the grid is selected.
      * Subclasses should override. Subclasses can call
@@ -194,22 +191,6 @@ public class GridFragment extends Fragment {
      */
     public void onGridItemClick(GridView g, View v, int position, long id) {
 
-    }
-
-    /**
-     * Provide the cursor for the {@link GridView}.
-     */
-    public void setGridAdapter(ListAdapter adapter) {
-        final boolean hadAdapter = (mAdapter != null);
-        mAdapter = adapter;
-        if (mGrid != null) {
-            mGrid.setAdapter(adapter);
-            if (!mGridShown && !hadAdapter) {
-                // The grid was hidden, and previously didn't have an
-                // adapter.  It is now time to show it.
-                setGridShown(true, (getView().getWindowToken() != null));
-            }
-        }
     }
 
     /**
@@ -343,6 +324,22 @@ public class GridFragment extends Fragment {
         return mAdapter;
     }
 
+    /**
+     * Provide the cursor for the {@link GridView}.
+     */
+    public void setGridAdapter(ListAdapter adapter) {
+        final boolean hadAdapter = (mAdapter != null);
+        mAdapter = adapter;
+        if (mGrid != null) {
+            mGrid.setAdapter(adapter);
+            if (!mGridShown && !hadAdapter) {
+                // The grid was hidden, and previously didn't have an
+                // adapter.  It is now time to show it.
+                setGridShown(true, (getView().getWindowToken() != null));
+            }
+        }
+    }
+
     private void ensureGrid() {
         if (mGrid != null) {
             return;
@@ -354,7 +351,7 @@ public class GridFragment extends Fragment {
         if (root instanceof GridView) {
             mGrid = (GridView) root;
         } else {
-            mStandardEmptyView = (TextView)root.findViewById(INTERNAL_EMPTY_ID);
+            mStandardEmptyView = root.findViewById(INTERNAL_EMPTY_ID);
             if (mStandardEmptyView == null) {
                 mEmptyView = root.findViewById(android.R.id.empty);
             } else {

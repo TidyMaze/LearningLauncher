@@ -1,7 +1,6 @@
-package ch.arnab.simplelauncher;
+package fr.yaro.learninglauncher;
 
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 

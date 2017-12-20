@@ -1,4 +1,4 @@
-package ch.arnab.simplelauncher;
+package fr.yaro.learninglauncher;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;

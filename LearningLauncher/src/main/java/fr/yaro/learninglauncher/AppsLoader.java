@@ -1,4 +1,4 @@
-package ch.arnab.simplelauncher;
+package fr.yaro.learninglauncher;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -9,6 +9,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -50,7 +51,7 @@ public class AppsLoader extends AsyncTaskLoader<ArrayList<AppModel>> {
         }
 
         AppModelDao appModelDao = LauncherDatabase.getInstance(this.getContext()).getAppModelDao();
-        List<AppModel> appsWithUsage = appModelDao.getAppsWithUsage();
+        List<AppModel> appsWithUsage = appModelDao.getAppsWithUsage(GregorianCalendar.getInstance().getTime());
         Log.d("LAUNCHER", "Stored: " + appsWithUsage.toString());
 
         items.forEach(app -> {

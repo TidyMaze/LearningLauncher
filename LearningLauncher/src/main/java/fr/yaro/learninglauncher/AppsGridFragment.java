@@ -1,4 +1,4 @@
-package ch.arnab.simplelauncher;
+package fr.yaro.learninglauncher;
 
 import android.content.Intent;
 import android.os.AsyncTask;

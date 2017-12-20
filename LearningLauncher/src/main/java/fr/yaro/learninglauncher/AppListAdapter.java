@@ -1,4 +1,4 @@
-package ch.arnab.simplelauncher;
+package fr.yaro.learninglauncher;
 
 import android.annotation.TargetApi;
 import android.content.Context;

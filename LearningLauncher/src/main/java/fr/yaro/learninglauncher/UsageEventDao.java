@@ -1,4 +1,4 @@
-package ch.arnab.simplelauncher;
+package fr.yaro.learninglauncher;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
@@ -15,7 +15,7 @@ import java.util.List;
 @Dao
 public interface UsageEventDao {
     @Query("SELECT * from event")
-    public List<UsageEvent> loadUsageEvents();
+    List<UsageEvent> loadUsageEvents();
 
     @Insert
     void insert(UsageEvent event);
