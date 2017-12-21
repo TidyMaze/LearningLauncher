@@ -12,7 +12,8 @@ import android.content.Context;
 @TypeConverters({Converters.class})
 @Database(
         entities = { AppModel.class, UsageEvent.class },
-        version = 7
+        version = 9,
+        exportSchema = false
 )
 public abstract class LauncherDatabase extends RoomDatabase {
     private static final String DB_NAME = "launcherDatabase.db";

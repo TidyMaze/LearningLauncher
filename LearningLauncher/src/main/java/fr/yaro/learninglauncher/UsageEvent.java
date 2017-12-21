@@ -19,12 +19,22 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
         childColumns = "appId",
         onDelete = CASCADE))
 public class UsageEvent {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    private int id;
+
     @ColumnInfo
     private Instant date;
 
     @ColumnInfo
     private int appId;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Instant getDate() {
         return date;

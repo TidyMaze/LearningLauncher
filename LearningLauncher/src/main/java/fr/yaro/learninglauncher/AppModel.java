@@ -38,6 +38,11 @@ public class AppModel {
     @ColumnInfo(name = "uid")
     private int mAppId;
 
+    private float scoreWindow;
+    private float scoreDOW;
+    private float scoreAll;
+
+
     private float score;
 
     public AppModel(Context context, ApplicationInfo info) {
@@ -127,12 +132,39 @@ public class AppModel {
         this.score = score;
     }
 
+    public float getScoreWindow() {
+        return scoreWindow;
+    }
+
+    public void setScoreWindow(float scoreWindow) {
+        this.scoreWindow = scoreWindow;
+    }
+
+    public float getScoreDOW() {
+        return scoreDOW;
+    }
+
+    public void setScoreDOW(float scoreDOW) {
+        this.scoreDOW = scoreDOW;
+    }
+
+    public float getScoreAll() {
+        return scoreAll;
+    }
+
+    public void setScoreAll(float scoreAll) {
+        this.scoreAll = scoreAll;
+    }
+
     @Override
     public String toString() {
         return "AppModel{" +
                 "mAppLabel='" + mAppLabel + '\'' +
                 ", mAppId=" + mAppId +
-                ", score=" + score +
+                ", scoreWindow=" + String.format("%.2f", scoreWindow) +
+                ", scoreDOW=" + String.format("%.2f", scoreDOW) +
+                ", scoreAll=" + String.format("%.2f", scoreAll) +
+                ", score=" + String.format("%.2f", score) +
                 '}';
     }
 }
