@@ -6,7 +6,7 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -31,27 +31,27 @@ public interface AppModelDao {
     List<AppModel> findAppModelsByUid(int uid);
 
     @Query("WITH raw AS (\n" +
-            "\tSELECT app.label, app.uid, ifnull(scoreWindow, 0) as scoreWindow, ifnull(dowQuery.scoreDOW,0) as scoreDOW, ifnull(scoreAll,0) as scoreAll, (ifnull(scoreWindow, 0)*5 + ifnull(scoreDOW,0)*2 + ifnull(scoreAll,0))/8 as score, time(:referenceDate/1000, 'unixepoch') as date\n" +
+            "\tSELECT app.label, app.uid, ifnull(scoreWindow, 0) as scoreWindow, ifnull(dowQuery.scoreDOW,0) as scoreDOW, ifnull(scoreAll,0) as scoreAll, (ifnull(scoreWindow, 0)*5 + ifnull(scoreDOW,0)*2 + ifnull(scoreAll,0))/8 as score, :referenceDate as date\n" +
             "\tFROM\n" +
             "\t\tapp\n" +
             "\t\tLEFT JOIN (\n" +
             "\t\t\tSELECT appId, CAST(COUNT(*) as float) / (\n" +
-            "\t\t\t\tSELECT COUNT(*) as nb FROM event where time(event.date/1000, 'unixepoch') >= time(:referenceDate/1000,'unixepoch', '-30 minutes') and time(event.date/1000, 'unixepoch') <= time(:referenceDate/1000,'unixepoch','+30 minutes')\n" +
-            "\t\t\t) as scoreWindow, time(:referenceDate/1000, 'unixepoch') as date FROM event where time(event.date/1000, 'unixepoch') >= time(:referenceDate,'unixepoch', '-30 minutes') and time(event.date/1000, 'unixepoch', 'unixepoch') <= time(:referenceDate,'unixepoch', '+30 minutes')\n" +
-            "\t\t\tgroup by time(:referenceDate/1000, 'unixepoch'), appId\n" +
-            "\t\t) as windowQuery on windowQuery.appId = app.uid and windowQuery.date = time(:referenceDate/1000,'unixepoch', 'unixepoch')\n" +
+            "\t\t\t\tSELECT COUNT(*) as nb FROM event where time(event.date, 'unixepoch') >= time(:referenceDate,'unixepoch', '-30 minutes') and time(event.date, 'unixepoch') <= time(:referenceDate,'unixepoch','+30 minutes')\n" +
+            "\t\t\t) as scoreWindow, :referenceDate as date FROM event where time(event.date, 'unixepoch') >= time(:referenceDate,'unixepoch', '-30 minutes') and time(event.date, 'unixepoch') <= time(:referenceDate,'unixepoch', '+30 minutes')\n" +
+            "\t\t\tgroup by date, appId\n" +
+            "\t\t) as windowQuery on windowQuery.appId = app.uid and windowQuery.date = :referenceDate\n" +
             "\t\tLEFT JOIN (\n" +
             "\t\t\tSELECT appId, CAST(COUNT(*) as float) / (\n" +
-            "\t\t\t\tSELECT COUNT(*) FROM event where strftime('%w', event.date/1000, 'unixepoch') = strftime('%w',:referenceDate, 'unixepoch')\n" +
-            "\t\t\t) as scoreDOW, time(:referenceDate/1000, 'unixepoch') as date FROM event where strftime('%w', event.date/1000, 'unixepoch') = strftime('%w',:referenceDate, 'unixepoch')\n" +
-            "\t\t\tgroup by time(:referenceDate/1000, 'unixepoch'), appId\n" +
-            "\t\t) as dowQuery on dowQuery.appId = app.uid and dowQuery.date = time(:referenceDate/1000, 'unixepoch')\n" +
+            "\t\t\t\tSELECT COUNT(*) FROM event where strftime('%w', event.date, 'unixepoch') = strftime('%w',:referenceDate, 'unixepoch')\n" +
+            "\t\t\t) as scoreDOW, :referenceDate as date FROM event where strftime('%w', event.date, 'unixepoch') = strftime('%w',:referenceDate, 'unixepoch')\n" +
+            "\t\t\tgroup by date, appId\n" +
+            "\t\t) as dowQuery on dowQuery.appId = app.uid and dowQuery.date = :referenceDate\n" +
             "\t\tLEFT JOIN (\n" +
             "\t\t\tSELECT appId, CAST(COUNT(*) as float) / (\n" +
             "\t\t\t\tSELECT COUNT(*) FROM event\n" +
-            "\t\t\t) as scoreAll, time(:referenceDate/1000, 'unixepoch') as date FROM event\n" +
-            "\t\t\tgroup by time(:referenceDate/1000, 'unixepoch'), appId\n" +
-            "\t\t) as allQuery on allQuery.appId = app.uid and allQuery.date = time(:referenceDate/1000, 'unixepoch')\n" +
+            "\t\t\t) as scoreAll, :referenceDate as date FROM event\n" +
+            "\t\t\tgroup by date, appId\n" +
+            "\t\t) as allQuery on allQuery.appId = app.uid and allQuery.date = :referenceDate\n" +
             ")\n" +
             "SELECT * FROM raw\n" +
             "WHERE raw.uid in (\n" +
@@ -61,5 +61,5 @@ public interface AppModelDao {
             "\tLIMIT 10\n" +
             ")\n" +
             "order by score DESC, label, uid ASC")
-    List<AppModel> getAppsWithUsage(Date referenceDate);
+    List<AppModel> getAppsWithUsage(Instant referenceDate);
 }

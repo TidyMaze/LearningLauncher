@@ -9,9 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -100,7 +99,7 @@ class AddEventTask extends AsyncTask<Void, Void, Void>{
             appModelDao.insert(am);
         }
 
-        Date time = Calendar.getInstance().getTime();
+        Instant time = Instant.now();
         UsageEvent usageEvent = new UsageEvent();
         usageEvent.setAppId(app.getMAppId());
         usageEvent.setDate(time);

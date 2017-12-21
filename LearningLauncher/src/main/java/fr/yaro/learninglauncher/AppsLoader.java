@@ -6,10 +6,10 @@ import android.content.pm.PackageManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.util.Log;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -51,7 +51,7 @@ public class AppsLoader extends AsyncTaskLoader<ArrayList<AppModel>> {
         }
 
         AppModelDao appModelDao = LauncherDatabase.getInstance(this.getContext()).getAppModelDao();
-        List<AppModel> appsWithUsage = appModelDao.getAppsWithUsage(GregorianCalendar.getInstance().getTime());
+        List<AppModel> appsWithUsage = appModelDao.getAppsWithUsage(Instant.now());
         Log.d("LAUNCHER", "Stored: " + appsWithUsage.toString());
 
         items.forEach(app -> {

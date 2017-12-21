@@ -5,7 +5,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
-import java.util.Date;
+import java.time.Instant;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -21,16 +21,16 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 public class UsageEvent {
     @PrimaryKey
     @ColumnInfo
-    private Date date;
+    private Instant date;
 
     @ColumnInfo
     private int appId;
 
-    public Date getDate() {
+    public Instant getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(Instant date) {
         this.date = date;
     }
 
