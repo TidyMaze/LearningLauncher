@@ -12,6 +12,8 @@ import android.widget.GridView;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Arnab Chakraborty
@@ -36,6 +38,14 @@ public class AppsGridFragment extends GridFragment implements LoaderManager.Load
 
         // create the loader to load the apps list in background
         getLoaderManager().initLoader(0, null, this);
+
+        new Timer("Update apps timer").schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Log.i("LAUNCHER", "updating apps");
+                AppsGridFragment.this.getLoaderManager().restartLoader(0, null, AppsGridFragment.this);
+            }
+        }, 0, 5 * 60000);
     }
 
     @Override
