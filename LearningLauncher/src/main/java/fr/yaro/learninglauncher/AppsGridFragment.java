@@ -22,6 +22,8 @@ public class AppsGridFragment extends GridFragment implements LoaderManager.Load
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        Log.d("LAUNCHER", "Creating appsGridFragment!");
+
         super.onActivityCreated(savedInstanceState);
 
         setEmptyText("No Applications");
@@ -38,6 +40,7 @@ public class AppsGridFragment extends GridFragment implements LoaderManager.Load
 
     @Override
     public Loader<ArrayList<AppModel>> onCreateLoader(int id, Bundle bundle) {
+        Log.d("LAUNCHER", "creating new Loader!");
         return new AppsLoader(getActivity());
     }
 
@@ -112,6 +115,7 @@ class AddEventTask extends AsyncTask<Void, Void, Void>{
 
     @Override
     protected void onPostExecute(Void aVoid) {
+        Log.i("LAUNCHER", "Reloading after inserted usage event");
         appsGridFragment.getLoaderManager().restartLoader(0, null, appsGridFragment);
     }
 }

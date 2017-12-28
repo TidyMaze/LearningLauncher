@@ -19,4 +19,9 @@ public class HomeScreen extends FragmentActivity {
         getMenuInflater().inflate(R.menu.home_screen, menu);
         return true;
     }
+
+    @Override
+    public void onBackPressed() {
+        // Nothing, blocking back button is great
+    }
 }
